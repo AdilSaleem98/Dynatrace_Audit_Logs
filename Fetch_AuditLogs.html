@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynatrace Audit Logs</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for the tab and content */
+        .tab-container {
+            /* padding-top: 20px; */
+            /* padding-right: 10px; */
+            height: 100vh;
+            display: flex;
+        }
+
+         /* Styling for the tab */
+        .tab {
+            width: 45%;
+            height: auto;
+            /* padding-bottom: 10px; */
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: width 0.75s 0.1s;
+        } 
+
+        /* Show the content when the tab is clicked */
+        .tab.active {
+            overflow-y: scroll;
+            display: block;
+            width: auto;
+        }
+
+        .tab:not(.active):hover {
+            width: 100%;
+        }
+
+        /* Styling for the content */
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+        }
+
+        /* Button container styling */
+        .button-container {
+            padding: 10px;
+            height: auto;
+            display: grid;
+        }
+
+        /* Button styling */
+        .button {
+            margin-bottom: 10px;
+            margin-left: 2px;
+            padding: 10px;
+            background-color: yellowgreen;
+            color: #333;
+            font-weight:800;
+            border: solid;
+            border-color: white;
+            cursor: pointer;
+            width: auto;
+            
+            text-align: left;
+        }
+
+        .button:hover {
+            background-color: rgb(89, 124, 18);
+        }
+
+        /* Hide buttons when the tab is collapsed */
+        .tab:not(.active) .button {
+            display: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+            background-color: #333;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        /* CSS for table formatting */
+
+        .body-container {
+            /* padding-top: 20px; */
+            display: flex;
+            flex-direction: row;
+        }
+        .content-container {
+            /* padding-left: 20px; */
+            flex-grow: 1; /* Allow content to grow and fill the remaining space */
+            overflow-x: scroll; /* Hide overflow content when the tab is collapsed */
+            transition: margin-left 0.75s; /* Add transition for smooth sliding effect */
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* Additional styling can be added based on your preferences */
+
+        .Title {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 8vh;
+            background-color:yellowgreen;
+            border: rgb(69, 92, 22);
+            border-radius: 5px;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            font-size:50px;
+            text-shadow: 1px 1px whitesmoke;
+            position:sticky ;
+            top: 0;
+            
+        }
+        .header1 {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            background-color: #333;
+            position: fixed;
+        }
+        .SearchBar {
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border: #333;
+            border-style:outset;
+        }
+        .SearchBar-container {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .Fetch_Button {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-weight: bold;
+        }
+        .fetchButton-container {
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-left: 10px;
+
+        }
+
+        .Env_Dropdown , .DropDown {
+            padding: 10px;
+        
+        }
+
+        .Dropdown-container {
+            padding: 10px;
+            color: white;
+            position: fixed;
+            right: 10px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .output {
+            padding-top: 50px;
+            padding-left: 2px;
+            font-size: large;
+        }
+    </style>
+</head>
+<body>
+    <div class="Title">
+        Dynatrace Audit Logs
+    </div>
+    <div class="body-container">
+        
+        <div class="tab-container">
+            <div class="tab" onclick="toggleTab()">
+
+                <div class="button-container">
+                    <button class="button" onclick="fetchAuditLogs('')">SUMMARY</button>
+                    <button class="button" onclick="fetchAuditLogs('CREATE')">CREATE</button>
+                    <button class="button" onclick="fetchAuditLogs('DELETE')">DELETE</button>
+                    <button class="button" onclick="fetchAuditLogs('GENERAL')">GENERAL</button>
+                    <button class="button" onclick="fetchAuditLogs('GET')">GET</button>
+                    <button class="button" onclick="fetchAuditLogs('LOGIN')">LOGIN</button>
+                    <button class="button" onclick="fetchAuditLogs('LOGOUT')">LOGOUT</button>
+                    <button class="button" onclick="fetchAuditLogs('PATCH')">PATCH</button>
+                    <button class="button" onclick="fetchAuditLogs('POST')">POST</button>
+                    <button class="button" onclick="fetchAuditLogs('PUT')">PUT</button>
+                    <button class="button" onclick="fetchAuditLogs('READ')">READ</button>
+                    <button class="button" onclick="fetchAuditLogs('REMOTE_CONFIGURATION_MANAGEMENT')">REMOTE_CONFIGURATION_MANAGEMENT</button>
+                    <button class="button" onclick="fetchAuditLogs('REVOKE')">REVOKE</button>
+                    <button class="button" onclick="fetchAuditLogs('TAG_ADD')">TAG_ADD</button>
+                    <button class="button" onclick="fetchAuditLogs('TAG_REMOVE')">TAG_REMOVE</button>
+                    <button class="button" onclick="fetchAuditLogs('TAG_UPDATE')">TAG_UPDATE</button>
+                    <button class="button" onclick="fetchAuditLogs('UPDATE')">UPDATE</button>
+
+                    <!-- Add buttons for other JSON files here -->
+                </div>
+            </div>
+        </div>
+        <div class="content-container">
+            <div id="Top-container" class="header1" >
+                <div class="fetchButton-container">
+                    <button id="fetchButton" class="Fetch_Button" onclick="fetchAuditLogs('')">Fetch Audit Logs</button>
+                </div>
+                <div class="SearchBar-container">
+                    <input type="text" id="filterInput" placeholder=" Search for data..." class="SearchBar">
+                </div>
+                <div class="Dropdown-container">
+                    <div class="Env_Dropdown">
+                        <label for="environment">Select Environment:</label>
+                        <select id="environment">
+                            <option value="Your Environment1 ID">Environment1 Name</option>
+                            <option value="Your Environment2 ID">Environment2 Name</option>
+                        </select>
+                    </div>
+                    <div class="DropDown">
+                        <label for="timeFrame">Select a Time Frame:</label>
+                        <select id="timeFrame">
+                            <option value="6h">Last 6 Hours</option>
+                            <option value="12h">Last 12 Hours</option>
+                            <option value="24h">Last 24 Hours</option>
+                            <option value="72h">Last 72 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <!-- You can add more presets as per your choice -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <output class="output">
+                <strong><pre id="auditLogs"></pre> </strong><!-- Element to display the logs with formatting -->
+            </output>
+            <div id="json-table" class="Table">
+                <!-- JSON content will be displayed here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Create an object to store loaded JSON data
+        const loadedData = {};
+
+        function toggleTab() {
+            var tab = document.querySelector('.tab');
+
+            if (tab.classList.contains('active')) {
+                tab.classList.remove('active');
+            } else {
+                tab.classList.add('active');
+            }
+        }
+        // Get the TimeFrame
+        function getTimeFrame() {
+            // Get the selected value from the dropdown
+            var dropdown = document.getElementById("timeFrame");
+            var selectedValue = dropdown.value;
+            return selectedValue;
+        }
+
+        // Get the Environment
+        function getEnvironment() {
+            // Get the selected value from the dropdown
+            var dropdown = document.getElementById("environment");
+            var selectedValue = dropdown.value;
+            return selectedValue;
+        }
+
+        function formatTimeFrame(timestamp) {
+            const date = new Date(timestamp); // Create a Date object using the UTC milliseconds timestamp
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        async function fetchAuditLogs(eventType) {
+
+            Environment1="ID";// Environment1 ID
+            Environment2="ID";// Environment2 ID
+
+            // Call getEnvironment to get the selected environment value
+            const selectedEnvironment = await getEnvironment();
+
+            // Call getTimeFrame to get the selected time frame value
+            const selectedTimeFrame = await getTimeFrame();
+
+            // Clear the previous logs
+            const auditLogsElement = document.getElementById('auditLogs');
+            auditLogsElement.textContent = 'Fetching audit logs...';
+            
+            url = "https://<Dynatrace Cluster URL>/e/"+selectedEnvironment+"/api/v2/auditlogs?pageSize=5000&from=now-"+selectedTimeFrame;//
+            if (eventType !== '') {
+                url = "https://<Dynatrace Cluster URL>/e/"+selectedEnvironment+"/api/v2/auditlogs?pageSize=5000&filter=eventType%28"+eventType+"%29&from=now-"+selectedTimeFrame;
+            }
+
+            if (selectedEnvironment === Environment1) {
+                // In case of Environment1
+                headers = {
+                "Authorization": "Api-Token <Environment1 Access Token here>", // Replace with your actual API token
+                };
+            }else if (selectedEnvironment === Environment2) {
+                // In case of Environment2
+                headers = {
+                "Authorization": "Api-Token <Environment2 Access Token here>", // Replace with your actual API token
+                };
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const jsonData = await response.json(); // Parse the JSON response
+
+                // Check if jsonData has at least 3 key-value pairs
+                const keys = Object.keys(jsonData);
+                if (keys.length >= 3) {
+                    auditLogsElement.textContent = "Total Logs: "+ jsonData[keys[0]];
+                    // Get the value of the 3rd key-value pair (index 2)
+                    const thirdValue = jsonData[keys[2]];
+                    console.log('Value of the 3rd key:', thirdValue);
+                    // Iterate through the list and update the timeFrame values
+                    const formattedList = thirdValue.map((jsonObj) => {
+                        return { ...jsonObj, timestamp: formatTimeFrame(jsonObj.timestamp) };
+                    });
+                    displayJSON(formattedList);
+
+                    // You can save this thirdValue variable or use it as needed
+                } else {
+                    console.error('JSON data does not have at least 3 key-value pairs.');
+                }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+        }
+
+        // Add an event listener to the button
+        const fetchButton = document.getElementById('fetchButton');
+        fetchButton.addEventListener('click', fetchAuditLogs);
+
+        function displayJSON(data) {
+            const table = document.getElementById('json-table');
+            table.innerHTML = ''; // Clear previous content
+        
+            // Create a table element
+            const dataTable = document.createElement('table');
+            dataTable.classList.add('table');
+
+            // Create a table header row
+            const headerRow = document.createElement('tr');
+
+            // Loop through the keys of the first JSON object to create table headers
+            const headers = Object.keys(data[0]);
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+
+            dataTable.appendChild(headerRow);
+
+            // Create a table body
+            const tableBody = document.createElement('tbody');
+
+            // Loop through the data and create table rows
+            data.forEach(jsonObject => {
+                const row = document.createElement('tr');
+
+                // Loop through the headers to populate table cells with data
+                headers.forEach(header => {
+                    const cellData = jsonObject[header];
+                    const cell = document.createElement('td');
+                    
+                    if (typeof cellData === 'object' && cellData !== null) {
+                        // Handle nested objects by converting them to JSON strings
+                        cell.textContent = JSON.stringify(cellData);
+                    } else {
+                        cell.textContent = cellData;
+                    }
+                    
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+            });
+
+            dataTable.appendChild(tableBody);
+
+            table.appendChild(dataTable);
+
+            
+            // Add filter functionality
+            const filterInput = document.getElementById('filterInput');
+            filterInput.addEventListener('input', function () {
+                const filterValue = filterInput.value.toLowerCase();
+                const rows = tableBody.getElementsByTagName('tr');
+                Array.from(rows).forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let shouldShowRow = false;
+                    Array.from(cells).forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(filterValue)) {
+                            shouldShowRow = true;
+                        }
+                    });
+                    row.style.display = shouldShowRow ? '' : 'none';
+                });
+            });
+        }
+        
+
+    </script>
+</body>
+</html>
