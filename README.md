@@ -58,6 +58,7 @@ Currently, **"Fetch Audit Logs"** button on main page and **"SUMMARY"** button o
 
 
 - **Custom_http_server.py**
+  - **Dependencies:** **Python3**, **http** & **socketserver** modules
   - **Port 8000** is used in my case, **but** you can replace as per your choice
  
     ![6f233ccc-440f-4c27-bdfe-815c30a4186f](https://github.com/AdilSaleem98/Dynatrace_Audit_Logs/assets/47393539/9d9f441d-e9a2-4673-99b5-be96dcae0f6c)
