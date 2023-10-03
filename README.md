@@ -15,7 +15,7 @@ We have **2** files **Fetch_AuditLogs.html** & **Custom_http_server.py**.
 
 Fetch_AuditLogs.html is our **Web Page** code file while Custom_http_server.py **hosts** our page on local machine in Windows.
 
-![d574e9b8-2637-4de3-a60d-f4df280901b3](https://github.com/AdilSaleem98/Dynatrace_Audit_Logs/assets/47393539/bd622b47-61ce-4652-bf2c-fa859fafbcd3)
+![11ad4480-2f2c-42e9-81e2-56949ff21a77](https://github.com/AdilSaleem98/Dynatrace_Audit_Logs/assets/47393539/8d165abe-3d79-4775-81da-4a16f26b7db7)
 
 
 **Following are the features that this Web page provides:**
